@@ -30,6 +30,8 @@ struct FTNode {
   double a = 0;  // linear model slope
   double b = 0;  // linear model intercept
   int num_keys = 0;
+  
+  struct FTNode* right_node; // B-link tree right pointer (Yang Duan)
 };
 
 /*** Helpers ***/
