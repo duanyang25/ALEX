@@ -38,17 +38,19 @@ namespace alex {
 // https://blog.csdn.net/weixin_43869898/article/details/109721333
 class spin_lock {
 public:
-    spin_lock() = default;
+    spin_lock(){
+      std::atomic_init(&flag, false);
+    }
     spin_lock(const spin_lock&){}; 
     spin_lock& operator=(const spin_lock) = delete;
     void lock() {   // acquire spin lock
-        while (flag.test_and_set(std::memory_order_acquire)) {}
+        while (flag.exchange(true, std::memory_order_acquire)) {}
     }
     void unlock() {   // release spin lock
-        flag.clear(std::memory_order_release);
+        flag.store(false, std::memory_order_release);
     }
 private:
-    std::atomic_flag flag = ATOMIC_FLAG_INIT;
+    std::atomic<bool> flag;
 };
 
 // A parent class for both types of ALEX nodes
