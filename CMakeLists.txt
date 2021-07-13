@@ -3,7 +3,7 @@ project(alex)
 
 set(CMAKE_CXX_STANDARD 14)
 
-# Define debug Macro
+# Define debug macro and compile with -pthread flag
 if(CMAKE_BUILD_TYPE STREQUAL Debug)        
     ADD_DEFINITIONS(-DDEBUG)               
 endif()

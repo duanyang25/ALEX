@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include <atomic>
+
 #include "alex_base.h"
 
 // Whether we store key and payload arrays separately in data nodes
@@ -32,13 +34,29 @@
 
 namespace alex {
 
+// Spin lock with an atomic flag that indicates whether it is using/locked or not-using/unlocked
+// https://blog.csdn.net/weixin_43869898/article/details/109721333
+class spin_lock {
+public:
+    spin_lock() = default;
+    spin_lock(const spin_lock&){}; 
+    spin_lock& operator=(const spin_lock) = delete;
+    void lock() {   // acquire spin lock
+        while (flag.test_and_set(std::memory_order_acquire)) {}
+    }
+    void unlock() {   // release spin lock
+        flag.clear(std::memory_order_release);
+    }
+private:
+    std::atomic_flag flag = ATOMIC_FLAG_INIT;
+};
+
 // A parent class for both types of ALEX nodes
 template <class T, class P>
 class AlexNode {
  public:
-
-  // Whether this node is locked (Yang Duan)
-  bool locked = false;
+  // Whether this node is locked with atomic operations
+  spin_lock lock;
 
   // Whether this node is a leaf (data) node
   bool is_leaf_ = false;

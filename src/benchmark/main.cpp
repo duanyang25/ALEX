@@ -22,6 +22,7 @@
 
 // Concurrent processing
 void proc(int num){
+  num = num *2;
 #ifdef DEBUG
   std::cout << "Hi, I am Thread " << num << std::endl;
 #endif
