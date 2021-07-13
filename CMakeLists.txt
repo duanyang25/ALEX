@@ -3,13 +3,18 @@ project(alex)
 
 set(CMAKE_CXX_STANDARD 14)
 
+# Define debug Macro
+if(CMAKE_BUILD_TYPE STREQUAL Debug)        
+    ADD_DEFINITIONS(-DDEBUG)               
+endif()
+
 if(MSVC)
     set(CMAKE_CXX_FLAGS "/O2 /arch:AVX2 /W1 /EHsc")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
-    set(CMAKE_CXX_FLAGS "-O3 -xHost")
+    set(CMAKE_CXX_FLAGS "-O3 -xHost -pthread")
 else()
     # clang and gcc
-    set(CMAKE_CXX_FLAGS "-O3 -march=native -Wall -Wextra")
+    set(CMAKE_CXX_FLAGS "-O3 -march=native -Wall -Wextra -pthread")
 endif()
 
 include_directories(src/core)
