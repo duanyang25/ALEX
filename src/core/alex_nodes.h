@@ -36,6 +36,10 @@ namespace alex {
 template <class T, class P>
 class AlexNode {
  public:
+
+  // Whether this node is locked (Yang Duan)
+  bool locked = false;
+
   // Whether this node is a leaf (data) node
   bool is_leaf_ = false;
 
