@@ -86,6 +86,8 @@ class AlexNode {
 
   // The size in bytes of all member variables in this class
   virtual long long node_size() const = 0;
+
+  AlexNode* right_node = NULL; // B-link tree right pointer
 };
 
 template <class T, class P, class Alloc = std::allocator<std::pair<T, P>>>
