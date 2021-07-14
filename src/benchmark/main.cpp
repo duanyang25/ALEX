@@ -8,6 +8,7 @@
 #include "../core/alex.h"
 
 #include <iomanip>
+#include <thread>
 
 #include "flags.h"
 #include "utils.h"
@@ -15,6 +16,17 @@
 // Modify these if running your own workload
 #define KEY_TYPE double
 #define PAYLOAD_TYPE double
+
+// Modern CPU has 4 cores in general 
+// #define NUM_THREADS 4
+
+// Concurrent processing
+void proc(int num){
+  num = num *2;
+#ifdef DEBUG
+  std::cout << "Hi, I am Thread " << num << std::endl;
+#endif
+}
 
 /*
  * Required flags:
@@ -84,6 +96,14 @@ int main(int argc, char* argv[]) {
   PAYLOAD_TYPE sum = 0;
   std::cout << std::scientific;
   std::cout << std::setprecision(3);
+
+  // Create threads
+  int num_threads = std::thread::hardware_concurrency(); // Obtain the number of this CPU's cores
+  std::thread threads[num_threads];
+  for(int i = 0; i < num_threads; i++){
+    threads[i] = std::thread(proc, i);
+  }
+  
   while (true) {
     batch_no++;
 
@@ -167,6 +187,14 @@ int main(int argc, char* argv[]) {
     if (workload_elapsed_time > time_limit * 1e9 * 60) {
       break;
     }
+  }
+
+  // Wait for threads to finish
+  for(int i = 0; i < num_threads; i++){
+      threads[i].join();  
+#ifdef DEBUG
+      std::cout << "Thread " << i << " finishded."<< std::endl;
+#endif
   }
 
   long long cumulative_operations = cumulative_lookups + cumulative_inserts;
